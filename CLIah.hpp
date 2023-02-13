@@ -5,8 +5,8 @@
 *
 * This project is under the GPL3.0 licence. (c) 2023 ADBeta
 *
-* Modified 07 Feb 2023
-* V 0.1.1
+* Modified 13 Feb 2023
+* V 0.2.5
 *******************************************************************************/
 
 #include <string>
@@ -18,8 +18,16 @@ namespace CLIah {
 
 
 /*** CLI Arg types, structs and variables *************************************/
-//Arg types
-enum class ArgType{ Flag, Subcommand, Variable, String }; 
+/* Arg types:
+	* Flag is a simple flag like -h or --verbose. No substring is returned
+		example --help / -h or -v / --verbose
+	* Subcommand is a matched arg with a second string to return as a substring
+		example --input hello-world would set substring to hello-world
+	* Variable is a type that has an = or - or some other non-text char to get
+	  the substring to set
+	  	example --value=12 sets substring to 12
+*/
+enum class ArgType{ Flag, Subcommand, Variable }; 
 
 /*** Error Handling ***********************************************************/
 
@@ -27,20 +35,21 @@ enum class ArgType{ Flag, Subcommand, Variable, String };
 /*** Argument Structure *******************************************************/
 //CLI Arg structure
 struct Arg {
-	//Argument name (used to index through all arg objects)
-	std::string argName;
+	//Argument reference name (used to index through all arg objects)
+	std::string argReference;
 
 	//Main and secondary (alias) match strings
-	std::string primaryMatchStr = "", aliasMatchStr = "";
+	std::string priMatchStr = "", aliasMatchStr = "";
 	//Is the match string(s) case sensitive
 	bool caseSensitive = true;
 	
-	ArgType type = ArgType::Flag; //What type of argument is this (default to flag)
+	//What type of argument is this (default to flag)
+	ArgType type = ArgType::Flag;
 	
 	//Function pointer. Executed automatically if match is found TODO
 	
 	//Return string from sub-command or variable type
-	std::string variableStr; 
+	std::string substring; 
 	
 	//Flag set if the argument has been detected, and validated.
 	bool detected = false;
@@ -49,7 +58,5 @@ struct Arg {
 
 
 }; //namespace CLIah
-
-
 
 #endif

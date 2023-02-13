@@ -19,9 +19,11 @@ some of the other options that can be used
 
 ## TO-DO 
 **This is currently in alpha. Things will change rapidly and drastically**
+* Variable type detection
+* verbose flag internally
+* debug modes?
 
-## Version
-* 0.1.1
+## Version 0.2.5
 
 ## Licence
 CLIah is under the GPL (GPL3.0), please see LICENCE for information  
