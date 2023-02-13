@@ -34,6 +34,8 @@ int main(int argc, char *argv[]) {
 		true                                 //Case sensitivity
     );
 
+
+	CLIah::getArgByReference("Help");
 	
 	
 

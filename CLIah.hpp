@@ -6,7 +6,7 @@
 * This project is under the GPL3.0 licence. (c) 2023 ADBeta
 *
 * Modified 13 Feb 2023
-* V 0.2.8
+* V 0.2.10
 *******************************************************************************/
 
 #include <string>
@@ -75,7 +75,7 @@ void addNewArg(std::string argReference, std::string priMatchStr, ArgType type,
                std::string aliasMatchStr, bool caseSensitive);
 
 //Finds and statically returns Arg struct with searched argReference string.
-//TODO
+Arg getArgByReference( std::string );
 
 }; //namespace CLIah
 

@@ -76,14 +76,12 @@ void analyseArgs(int argc, char *argv[]) {
 					itrtr->detected = true;
 				}
 				
-				
 				//TODO Variable type		
 			}
 		}
 		std::cout << std::endl << std::endl;
 	}
 }
-
 
 void addNewArg(std::string ref, std::string pri, ArgType type,
                       std::string alias = "", bool caseSensitive = true) {
@@ -99,6 +97,24 @@ void addNewArg(std::string ref, std::string pri, ArgType type,
 	
 	//Push the new argument to the argVector
 	argVector.push_back(newArg);
+}
+
+Arg getArgByReference(std::string reference) {
+	static Arg retArg;
+	
+	//Go through every argVector element and check for reference string
+	std::vector<Arg>::iterator itrtr; 
+	for(itrtr = argVector.begin(); itrtr != argVector.end(); itrtr++) {
+		//Compare reference string and argReference. 
+		if(reference.compare( itrtr->argReference ) == 0) {
+			retArg = *itrtr;
+		}
+	}
+	
+	//If no match is found, exec error routine. could just warn and continue TODO
+	std::cout << "Err, no reference match found" << std::endl;
+	
+	return retArg;
 }
 
 }

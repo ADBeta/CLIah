@@ -22,8 +22,9 @@ some of the other options that can be used
 * verbose flag internally
 * debug modes?
 * case sensitivity 
+* error handler and message system
 
-## Version 0.2.8
+## Version 0.2.10
 
 ## Licence
 CLIah is under the GPL (GPL3.0), please see LICENCE for information  
