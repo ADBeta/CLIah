@@ -6,10 +6,11 @@
 * This project is under the GPL3.0 licence. (c) 2023 ADBeta
 *
 * Modified 13 Feb 2023
-* V 0.2.5
+* V 0.2.8
 *******************************************************************************/
 
 #include <string>
+#include <vector>
 
 #ifndef H_CLIAH
 #define H_CLIAH
@@ -48,14 +49,33 @@ struct Arg {
 	
 	//Function pointer. Executed automatically if match is found TODO
 	
+	/*** Detection variables. Not user modifiable ***/
+	//private:
+	
 	//Return string from sub-command or variable type
 	std::string substring; 
-	
 	//Flag set if the argument has been detected, and validated.
 	bool detected = false;
 	
 }; //struct Arg
 
+//Vector array of Args, stores user defined Args & variables therin
+extern std::vector <Arg> argVector;
+
+/*** CLIah functions **********************************************************/
+//Skims all arguments passed via cli and sets internal struct vars.
+//Must be called before any other functions can be.
+void analyseArgs(int argc, char *argv[]);
+
+//Pushes a new argument to the argVecor. Some variables are mandatory:
+// argReference		- String by which the argument is known. eg verbose
+// priMatchStr		- String to match for a detection (alias is optional)
+// argType			- The type of the argument, see ArgType for info
+void addNewArg(std::string argReference, std::string priMatchStr, ArgType type,
+               std::string aliasMatchStr, bool caseSensitive);
+
+//Finds and statically returns Arg struct with searched argReference string.
+//TODO
 
 }; //namespace CLIah
 
