@@ -107,7 +107,9 @@ Arg getArgByReference(std::string reference) {
 	for(itrtr = argVector.begin(); itrtr != argVector.end(); itrtr++) {
 		//Compare reference string and argReference. 
 		if(reference.compare( itrtr->argReference ) == 0) {
+			//Set the return Arg object pointer, and return it
 			retArg = *itrtr;
+			return retArg;
 		}
 	}
 	
@@ -117,4 +119,11 @@ Arg getArgByReference(std::string reference) {
 	return retArg;
 }
 
+bool isArgDetected(std::string reference) {
+	//Get the Arg by reference and assign it to an Arg object
+	Arg tempArg = getArgByReference(reference);
+	
+	return tempArg.detected;
 }
+
+} //namespace CLIah

@@ -2,20 +2,6 @@
 
 #include <iostream>
 
-
-/* PLAN
-	send argv and argc to a function, read each arg. if arg is not recognised
-	before one that is, detect and exit.
-	
-	if arg is one with substr, just copy next arg and push pointer onwards
-
-
-*/
-
-
-
-
-
 int main(int argc, char *argv[]) {
 	//Add new CLIah structs
 	CLIah::addNewArg(
@@ -33,13 +19,14 @@ int main(int argc, char *argv[]) {
 		"-v",                                //Alias match string
 		true                                 //Case sensitivity
     );
-
-
-	CLIah::getArgByReference("Help");
 	
-	
-
+	//Analyse the argc and argv inputs, to detect what args have been passed
 	CLIah::analyseArgs(argc, argv);
+	
+	std::cout << CLIah::isArgDetected("Verbose") << std::endl;
+	std::cout << CLIah::isArgDetected("Help") << std::endl;
+	//
+	std::cout << std::endl << std::endl;
 
 	return 0;
 }

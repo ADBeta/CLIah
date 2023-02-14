@@ -5,8 +5,8 @@
 *
 * This project is under the GPL3.0 licence. (c) 2023 ADBeta
 *
-* Modified 13 Feb 2023
-* V 0.2.10
+* Modified 14 Feb 2023
+* V 0.3.0
 *******************************************************************************/
 
 #include <string>
@@ -74,8 +74,11 @@ void analyseArgs(int argc, char *argv[]);
 void addNewArg(std::string argReference, std::string priMatchStr, ArgType type,
                std::string aliasMatchStr, bool caseSensitive);
 
-//Finds and statically returns Arg struct with searched argReference string.
+//Finds and returns Arg struct with matching argReference string.
 Arg getArgByReference( std::string );
+
+//Finds and returns the detected flag of an Arg by argReference
+bool isArgDetected( std::string );
 
 }; //namespace CLIah
 
