@@ -6,7 +6,7 @@
 * This project is under the GPL3.0 licence. (c) 2023 ADBeta
 *
 * Modified 14 Feb 2023
-* V 0.3.0
+* V 0.3.1
 *******************************************************************************/
 
 #include <string>
@@ -63,16 +63,17 @@ struct Arg {
 extern std::vector <Arg> argVector;
 
 /*** CLIah functions **********************************************************/
-//Skims all arguments passed via cli and sets internal struct vars.
-//Must be called before any other functions can be.
-void analyseArgs(int argc, char *argv[]);
-
 //Pushes a new argument to the argVecor. Some variables are mandatory:
 // argReference		- String by which the argument is known. eg verbose
 // priMatchStr		- String to match for a detection (alias is optional)
 // argType			- The type of the argument, see ArgType for info
 void addNewArg(std::string argReference, std::string priMatchStr, ArgType type,
                std::string aliasMatchStr, bool caseSensitive);
+
+//Skims all arguments passed via cli and sets internal struct vars.
+//Must be called before any other functions can be.
+void analyseArgs(int argc, char *argv[]);
+
 
 //Finds and returns Arg struct with matching argReference string.
 Arg getArgByReference( std::string );

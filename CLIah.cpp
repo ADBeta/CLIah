@@ -21,8 +21,6 @@ void analyseArgs(int argc, char *argv[]) {
 	--argc;
 	++argv;
 
-	//Create iterator for argVector for looping later
-	std::vector<Arg>::iterator itrtr; 
 
 	//Go through every element in the argv array
 	for(int argStrIdx = 0; argStrIdx < argc; argStrIdx++) {
@@ -31,7 +29,8 @@ void analyseArgs(int argc, char *argv[]) {
 	
 		std::cout << "input: " << inputArg << std::endl;
 		
-		//Loop through all Args stored in argVector. Use iterator as temp object
+		//Loop through all Args stored in argVector. Use iterator
+		std::vector<Arg>::iterator itrtr; 
 		for(itrtr = argVector.begin(); itrtr != argVector.end(); itrtr++) {
 			
 			std::cout << "arg: " << itrtr->argReference << std::endl;
@@ -67,16 +66,21 @@ void analyseArgs(int argc, char *argv[]) {
 						exit(EXIT_FAILURE);
 					}
 					
-					//Incriment argStrIdx by one, to get the next arg string, then
-					//the next loop will skip past it.
+					//Incriment argStrIdx to get the substring, and the next
+					//loop will go past it
 					++argStrIdx;
-					itrtr->substring = argv[argStrIdx];
+					itrtr->substring = (std::string)argv[argStrIdx];
 					
 					std::cout << "substr: " << itrtr->substring << std::endl;
 					itrtr->detected = true;
 				}
 				
-				//TODO Variable type		
+				//TODO Variable type	
+				
+				/*** Constant execution when a match is found *****************/
+				
+				//Break to prevent looping the rest of the Args
+				break;
 			}
 		}
 		std::cout << std::endl << std::endl;
