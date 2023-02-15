@@ -5,8 +5,8 @@
 *
 * This project is under the GPL3.0 licence. (c) 2023 ADBeta
 *
-* Modified 14 Feb 2023
-* V 0.3.1
+* Modified 15 Feb 2023
+* V 0.3.4
 *******************************************************************************/
 
 #include <string>
@@ -16,7 +16,6 @@
 #define H_CLIAH
 
 namespace CLIah {
-
 
 /*** CLI Arg types, structs and variables *************************************/
 /* Arg types:
@@ -31,7 +30,9 @@ namespace CLIah {
 enum class ArgType{ Flag, Subcommand, Variable }; 
 
 /*** Error Handling ***********************************************************/
-
+//Pass a error level flag and an error string.
+//0 - Warning    1 - Error    2 - Fatal Error (exits program)
+void errorMsg(const unsigned int errLevel, const std::string errMsg);
 
 /*** Argument Structure *******************************************************/
 //CLI Arg structure
@@ -49,15 +50,15 @@ struct Arg {
 	
 	//Function pointer. Executed automatically if match is found TODO
 	
-	/*** Detection variables. Not user modifiable ***/
-	//private:
-	
+	/*** Detection variables. Not for user modification ***/
 	//Return string from sub-command or variable type
 	std::string substring; 
 	//Flag set if the argument has been detected, and validated.
 	bool detected = false;
 	
 }; //struct Arg
+
+void printArg(const Arg &);
 
 //Vector array of Args, stores user defined Args & variables therin
 extern std::vector <Arg> argVector;
@@ -67,19 +68,19 @@ extern std::vector <Arg> argVector;
 // argReference		- String by which the argument is known. eg verbose
 // priMatchStr		- String to match for a detection (alias is optional)
 // argType			- The type of the argument, see ArgType for info
-void addNewArg(std::string argReference, std::string priMatchStr, ArgType type,
-               std::string aliasMatchStr, bool caseSensitive);
+void addNewArg(const std::string argReference, const std::string priMatchStr,
+               const ArgType type, const std::string aliasMatchStr, 
+               const bool caseSensitive);
 
 //Skims all arguments passed via cli and sets internal struct vars.
 //Must be called before any other functions can be.
 void analyseArgs(int argc, char *argv[]);
 
-
 //Finds and returns Arg struct with matching argReference string.
-Arg getArgByReference( std::string );
+Arg getArgByReference(const std::string);
 
 //Finds and returns the detected flag of an Arg by argReference
-bool isArgDetected( std::string );
+bool isArgDetected(const std::string);
 
 }; //namespace CLIah
 

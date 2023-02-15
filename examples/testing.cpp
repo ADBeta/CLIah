@@ -27,6 +27,8 @@ int main(int argc, char *argv[]) {
 	std::cout << CLIah::isArgDetected("Help") << std::endl;
 	//
 	std::cout << std::endl << std::endl;
+	
+	CLIah::getArgByReference("hello");
 
 	return 0;
 }

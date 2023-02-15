@@ -10,7 +10,7 @@ CLIah supports a wide range of arguments, parsing methods, and execution style:
 * Multiple argument types eg. flags, variables, strings and sub-commands.  
 * Argument string, plus one additional alias string (--verbose alias -v)  
 * Definable function pointers to automate execution if a CLI Argument is matched  
-* Multiple unrecognised arg modes, such as Exit, Warn and Ignore  
+* Multiple unrecognised arg failmodes - Exit, Warn and Ignore  
 
 Please see the tutorial for examples of each argument type, how to use them and  
 some of the other options that can be used
@@ -20,11 +20,9 @@ some of the other options that can be used
 ## TO-DO 
 **This is currently in alpha. Things will change rapidly and drastically**
 * Internal verbosity
-* debug modes?
 * case sensitivity 
-* error handler and message system
 
-## Version 0.3.1
+## Version 0.3.4
 
 ## Licence
 CLIah is under the GPL (GPL3.0), please see LICENCE for information  

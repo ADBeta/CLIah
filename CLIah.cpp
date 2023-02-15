@@ -12,29 +12,67 @@
 
 #include "CLIah.hpp"
 
+/*** Error Handling ***********************************************************/
+void CLIah::errorMsg(const unsigned int errLevel, const std::string errMsg) {
+	std::string prefix;
+	
+	//Set prefix to Warning or Error depenging on errLevel
+	if(errLevel == 0) { prefix = "Warning: ";
+	} else { prefix = "Error: "; }
+	
+	std::cerr << prefix << errMsg << std::endl;
+	
+	//If the errLevel is > 1 then exit the program as a fatal error
+	if(errLevel > 1) exit(EXIT_FAILURE);
+}
+
 /*** CLIah Functions **********************************************************/
 namespace CLIah {
 std::vector <Arg> argVector;
+
+void printArg(const Arg &ref) {
+	//Print the argReference, primary and alias args.
+	std::cout << "Name            | " << ref.argReference << std::endl;
+	std::cout << "Argument(s)     | " << ref.priMatchStr << "  " 
+	                               << ref.aliasMatchStr << std::endl;
+	
+	//Print case sensitivity
+	std::string caseStr;
+	if(ref.caseSensitive == false) { caseStr = "False";
+	} else { caseStr = "True"; }
+	
+	std::cout << "Case Sensitive  | " << caseStr << std::endl;
+	
+	//Print the type
+	std::string typeStr;
+	if(ref.type == ArgType::Flag) typeStr = "Flag";
+	if(ref.type == ArgType::Subcommand) typeStr = "Subcommand";
+	if(ref.type == ArgType::Variable) typeStr = "Variable";
+	
+	std::cout << "Type            | " << typeStr << std::endl;
+	
+	//If the type is Subcommand or Variable, print the substring (if detected)
+	if(ref.type == ArgType::Subcommand || ref.type == ArgType::Variable) {
+		std::cout << "Substring       | " << ref.substring << std::endl;
+	}
+}
 
 void analyseArgs(int argc, char *argv[]) {
 	//Regular argc and argv should have been passed. Adjust to remove argv[0]
 	--argc;
 	++argv;
 
-
 	//Go through every element in the argv array
 	for(int argStrIdx = 0; argStrIdx < argc; argStrIdx++) {
 		//Convert curent argv char[] to string
 		std::string inputArg = argv[argStrIdx];
-	
-		std::cout << "input: " << inputArg << std::endl;
+		
+		//Flag if a match can be made for this inputArg
+		bool matched = false; 
 		
 		//Loop through all Args stored in argVector. Use iterator
 		std::vector<Arg>::iterator itrtr; 
 		for(itrtr = argVector.begin(); itrtr != argVector.end(); itrtr++) {
-			
-			std::cout << "arg: " << itrtr->argReference << std::endl;
-		
 			
 			//Compare the primary and alias arg string to input. Store results
 			int priMatch, aliasMatch;
@@ -44,51 +82,56 @@ void analyseArgs(int argc, char *argv[]) {
 			/* NOTE: Leaving primary vs alias detection as possilbe independant 
 			triggers as this may be useful in the future for some niche cases */
 			if(priMatch == 0 || aliasMatch == 0) {
-				
-				std::cout << "matched reference: " << itrtr->argReference << std::endl;
-				
+			
 				/*** Arg Type detection ***************************************/
 				//Get the matched argument type to do specific execution.
 				CLIah::ArgType tempType = itrtr->type;
 				
-				//If the Arg is a Flag Type, just set detected and continue
-				if(tempType == CLIah::ArgType::Flag) {
-					std::cout << "flag set" << std::endl;
-					itrtr->detected = true;
-				}
+				//If the Arg is a Flag Type, no special executuion takes place
+				//Flag type --
 				
 				//If the Arg is Subcommand type, get the next inputArg string,
 				//set the substring of the main object
 				if(tempType == CLIah::ArgType::Subcommand) {
-					//Make sure there *IS* a next argument, if not error.
+					//Make sure there *IS* a next argument, if not fatal error.
 					if(argStrIdx + 1 >= argc) {
-						std::cout << "error, no extra command for subcommand" << std::endl;
-						exit(EXIT_FAILURE);
+						errorMsg(2, "analyseArgs: " + inputArg +
+						          " is Subcommand type but has no substring");
 					}
 					
 					//Incriment argStrIdx to get the substring, and the next
 					//loop will go past it
 					++argStrIdx;
 					itrtr->substring = (std::string)argv[argStrIdx];
-					
-					std::cout << "substr: " << itrtr->substring << std::endl;
-					itrtr->detected = true;
 				}
 				
 				//TODO Variable type	
 				
 				/*** Constant execution when a match is found *****************/
+				//Set the current argVector object detection flag to true, and 
+				//set matched flag true for no-match detection out of loop
+				itrtr->detected = true;
+				matched = true;
 				
-				//Break to prevent looping the rest of the Args
+				//If verbosity is enabled, print the matched arg
+				std::cout << "A match for " << inputArg << " was found:" << std::endl;
+				printArg(*itrtr); //TODO
+				
+				//Break to prevent looping more Args looking for a match
 				break;
 			}
+		}
+		
+		/*** If inputArg doesn't match any Arg, do defined error routine ******/
+		if(matched == false) {	//TODO Ignore mode
+			errorMsg(0, inputArg + " no match");
 		}
 		std::cout << std::endl << std::endl;
 	}
 }
 
-void addNewArg(std::string ref, std::string pri, ArgType type,
-                      std::string alias = "", bool caseSensitive = true) {
+void addNewArg(const std::string ref, const std::string pri, const ArgType type,
+               const std::string alias = "", const bool caseSensitive = true) {
 	//Create an Arg object to set the parameters to
 	Arg newArg;
 	
@@ -103,29 +146,30 @@ void addNewArg(std::string ref, std::string pri, ArgType type,
 	argVector.push_back(newArg);
 }
 
-Arg getArgByReference(std::string reference) {
+Arg getArgByReference(const std::string refStr) {
 	static Arg retArg;
 	
 	//Go through every argVector element and check for reference string
 	std::vector<Arg>::iterator itrtr; 
 	for(itrtr = argVector.begin(); itrtr != argVector.end(); itrtr++) {
 		//Compare reference string and argReference. 
-		if(reference.compare( itrtr->argReference ) == 0) {
+		if(refStr.compare( itrtr->argReference ) == 0) {
 			//Set the return Arg object pointer, and return it
 			retArg = *itrtr;
 			return retArg;
 		}
 	}
 	
-	//If no match is found, exec error routine. could just warn and continue TODO
-	std::cout << "Err, no reference match found" << std::endl;
+	//If no match is found, fatal error as this could cause segfaults
+	errorMsg(2, "getArgByReference: No Arg exists using reference " + refStr);
 	
+	//Return to avoid compile warning
 	return retArg;
 }
 
-bool isArgDetected(std::string reference) {
+bool isArgDetected(const std::string refStr) {
 	//Get the Arg by reference and assign it to an Arg object
-	Arg tempArg = getArgByReference(reference);
+	Arg tempArg = getArgByReference(refStr);
 	
 	return tempArg.detected;
 }
