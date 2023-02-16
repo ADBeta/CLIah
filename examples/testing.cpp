@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
 	std::cout << CLIah::isArgDetected("Verbose") << std::endl;
 	std::cout << CLIah::isArgDetected("Help") << std::endl;
 	//
-	std::cout << std::endl << std::endl;
+	std::cout << CLIah::getSubstring("Verbose") << std::endl << std::endl;
 	
 	CLIah::getArgByReference("hello");
 

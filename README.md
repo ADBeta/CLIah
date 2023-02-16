@@ -63,9 +63,8 @@ provides, but it is perfectly valid if some specific use is required.
 ## TO-DO 
 * case sensitivity 
 * Function pointers
-* get substring function
 
-## Version 0.4.1
+## Version 0.4.4
 
 ## Licence
 CLIah is under the GPL (GPL3.0), please see LICENCE for information  

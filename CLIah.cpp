@@ -200,4 +200,11 @@ bool isArgDetected(const std::string refStr) {
 	return tempArg.detected;
 }
 
+std::string getSubstring(const std::string refStr) {
+	//Get the Arg by reference and assign it to an Arg object
+	Arg tempArg = getArgByReference(refStr);
+	
+	return tempArg.substring;
+}
+
 } //namespace CLIah
