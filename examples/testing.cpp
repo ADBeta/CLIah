@@ -7,7 +7,7 @@ int main(int argc, char *argv[]) {
 	CLIah::Config::verbose = true; //Set verbosity when match is found
 	CLIah::Config::errorMode = CLIah::Config::ErrMode::exit; //Set error mode
 
-	//Add new CLIah structs
+	//Add new CLIah Arguments
 	CLIah::addNewArg(
 		"Help",                              //Reference
 		"--help",                            //Primary match string
