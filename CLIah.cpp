@@ -28,13 +28,23 @@ void CLIah::errorMsg(const unsigned int errLevel, const std::string errMsg) {
 
 /*** CLIah Functions **********************************************************/
 namespace CLIah {
+	namespace Config {
+		//Error mode when certain circumatances are encountered
+		ErrMode errorMode = ErrMode::exit;
+		
+		//Verbosity selection. Prints matched Args. Defaults to false
+		bool verbose = false;
+		
+	} //namespace Config
+
+/******************************************************************************/
 std::vector <Arg> argVector;
 
 void printArg(const Arg &ref) {
 	//Print the argReference, primary and alias args.
 	std::cout << "Name            | " << ref.argReference << std::endl;
 	std::cout << "Argument(s)     | " << ref.priMatchStr << "  " 
-	                               << ref.aliasMatchStr << std::endl;
+	          << ref.aliasMatchStr << std::endl;
 	
 	//Print case sensitivity
 	std::string caseStr;
@@ -45,16 +55,18 @@ void printArg(const Arg &ref) {
 	
 	//Print the type
 	std::string typeStr;
-	if(ref.type == ArgType::Flag) typeStr = "Flag";
-	if(ref.type == ArgType::Subcommand) typeStr = "Subcommand";
-	if(ref.type == ArgType::Variable) typeStr = "Variable";
+	if(ref.type == ArgType::flag) typeStr = "Flag";
+	if(ref.type == ArgType::subcommand) typeStr = "Subcommand";
+	if(ref.type == ArgType::variable) typeStr = "Variable";
 	
 	std::cout << "Type            | " << typeStr << std::endl;
 	
 	//If the type is Subcommand or Variable, print the substring (if detected)
-	if(ref.type == ArgType::Subcommand || ref.type == ArgType::Variable) {
+	if(ref.type == ArgType::subcommand || ref.type == ArgType::variable) {
 		std::cout << "Substring       | " << ref.substring << std::endl;
 	}
+	
+	std::cout << std::endl;
 }
 
 void analyseArgs(int argc, char *argv[]) {
@@ -92,7 +104,7 @@ void analyseArgs(int argc, char *argv[]) {
 				
 				//If the Arg is Subcommand type, get the next inputArg string,
 				//set the substring of the main object
-				if(tempType == CLIah::ArgType::Subcommand) {
+				if(tempType == CLIah::ArgType::subcommand) {
 					//Make sure there *IS* a next argument, if not fatal error.
 					if(argStrIdx + 1 >= argc) {
 						errorMsg(2, "analyseArgs: " + inputArg +
@@ -114,20 +126,34 @@ void analyseArgs(int argc, char *argv[]) {
 				matched = true;
 				
 				//If verbosity is enabled, print the matched arg
-				std::cout << "A match for " << inputArg << " was found:" << std::endl;
-				printArg(*itrtr); //TODO
+				if(Config::verbose == true) {
+					std::cout << "A match was found for \"" 
+					          << inputArg << "\"" << std::endl;
+					printArg(*itrtr);
+				}
 				
 				//Break to prevent looping more Args looking for a match
 				break;
 			}
-		}
+		} //End of ArgVector loop
 		
-		/*** If inputArg doesn't match any Arg, do defined error routine ******/
-		if(matched == false) {	//TODO Ignore mode
-			errorMsg(0, inputArg + " no match");
-		}
-		std::cout << std::endl << std::endl;
-	}
+		/*** Error Handling ***************************************************/
+		if(matched == false) {
+			//If mode is set to ignore, don't output message and don't exit.
+			if(Config::errorMode != Config::ErrMode::ignore) {
+				//Set up the error string
+				std::string errStr = "No match for Arg \"" + inputArg + "\"";
+				
+				//Detect which mode is selected.
+				if(Config::errorMode == Config::ErrMode::warn) {
+					errorMsg(0, errStr);
+				}
+				if(Config::errorMode == Config::ErrMode::exit) {
+					errorMsg(2, errStr);
+				}
+			}
+		} //End of error handler 
+	} //End of inputArg loop
 }
 
 void addNewArg(const std::string ref, const std::string pri, const ArgType type,

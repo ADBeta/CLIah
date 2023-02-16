@@ -5,8 +5,8 @@
 *
 * This project is under the GPL3.0 licence. (c) 2023 ADBeta
 *
-* Modified 15 Feb 2023
-* V 0.3.4
+* Modified 16 Feb 2023
+* V 0.4.1
 *******************************************************************************/
 
 #include <string>
@@ -16,6 +16,19 @@
 #define H_CLIAH
 
 namespace CLIah {
+
+/*** Configuration sub namespace **********************************************/
+	namespace Config {
+		//Error method under certain circumstances, e.g ErrMode::Ignore
+		enum class ErrMode { ignore, warn, exit };
+		
+		//How certain errors will be handled, defaults to exit
+		extern ErrMode errorMode;
+		
+		//Verbosity selection. Prints matched Args. Defaults to false
+		extern bool verbose;
+		
+	} //namespace Config
 
 /*** CLI Arg types, structs and variables *************************************/
 /* Arg types:
@@ -27,7 +40,7 @@ namespace CLIah {
 	  the substring to set
 	  	example --value=12 sets substring to 12
 */
-enum class ArgType{ Flag, Subcommand, Variable }; 
+enum class ArgType { flag, subcommand, variable }; 
 
 /*** Error Handling ***********************************************************/
 //Pass a error level flag and an error string.
@@ -46,7 +59,7 @@ struct Arg {
 	bool caseSensitive = true;
 	
 	//What type of argument is this (default to flag)
-	ArgType type = ArgType::Flag;
+	ArgType type = ArgType::flag;
 	
 	//Function pointer. Executed automatically if match is found TODO
 	

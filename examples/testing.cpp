@@ -3,11 +3,15 @@
 #include <iostream>
 
 int main(int argc, char *argv[]) {
+	//Configure the CLIah library
+	CLIah::Config::verbose = true; //Set verbosity when match is found
+	CLIah::Config::errorMode = CLIah::Config::ErrMode::exit; //Set error mode
+
 	//Add new CLIah structs
 	CLIah::addNewArg(
 		"Help",                              //Reference
 		"--help",                            //Primary match string
-		CLIah::ArgType::Flag,                //Argument type
+		CLIah::ArgType::flag,                //Argument type
 		"-h",                                //Alias match string
 		true                                 //Case sensitivity
     );
@@ -15,7 +19,7 @@ int main(int argc, char *argv[]) {
 	CLIah::addNewArg(
 		"Verbose",                           //Reference
 		"--verbose",                         //Primary match string
-		CLIah::ArgType::Subcommand,          //Argument type
+		CLIah::ArgType::subcommand,          //Argument type
 		"-v",                                //Alias match string
 		true                                 //Case sensitivity
     );
