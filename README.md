@@ -14,7 +14,7 @@ CLIah supports a wide range of arguments, parsing methods, and execution style:
 
 ## How To Use
 There are detailed examples in the `examples` directory, but here is a breif tutorial:  
-To add a new Argument to CLIah's 'database  
+To add a new Argument to CLIah's 'database'  
 ```C++
 CLIah::addNewArg(
 	"Help",                              //Reference
