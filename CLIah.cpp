@@ -10,7 +10,26 @@
 #include <string>
 #include <vector>
 
+//NOTE: algorithm is used for strToUpper(), purely for practice with transform.
+//If it is noted to be slow, or break some systems I will replace it with manual
+//Index based looping on a string. Let me know.
+#include <algorithm> 
+
 #include "CLIah.hpp"
+
+/*** Helper functions *********************************************************/
+std::string strToUpper(std::string input) {
+	//Transform seems to be the recommended method - causes another include 
+	//and may cause other unknown issues. For practice, this will stay for now,
+	//But may be replaced with a direct index (or iterator) in future.
+	std::transform(input.begin(), input.end(), input.begin(), 
+		//operation is getting the current char and performing toupper
+		[](unsigned char chr){ return std::toupper(chr); } // correct
+	);
+	
+	//Return the uppercase string
+	return input;
+}
 
 /*** Error Handling ***********************************************************/
 void CLIah::errorMsg(const unsigned int errLevel, const std::string errMsg) {
@@ -37,7 +56,7 @@ namespace CLIah {
 		
 	} //namespace Config
 
-/******************************************************************************/
+/*** Non API Functions ********************************************************/
 std::vector <Arg> argVector;
 
 void printArg(const Arg &ref) {
@@ -69,31 +88,50 @@ void printArg(const Arg &ref) {
 	std::cout << std::endl;
 }
 
+bool argStringsMatch(const Arg &ref, std::string input) {
+	//Copy the Arg match strings into strings we can modify
+	std::string priStr = ref.priMatchStr;
+	std::string aliasStr = ref.aliasMatchStr;
+	
+	//Case sensitivity check. If the Arg isn't case sensitive then convert
+	//Pri Alias and input to uppercase to make any case usage irrelevant
+	if(ref.caseSensitive == false) {
+		//Convert input, priStr and aliasStr to uppercase
+		input = strToUpper(input);
+		priStr = strToUpper(priStr);
+		aliasStr = strToUpper(aliasStr);
+	}
+	
+	//If an exact match for either pri or alias occurs, return a match flag
+	if(priStr.compare(input) == 0 || aliasStr.compare(input) == 0) {
+		return true;
+	}
+		
+	//If no match is found return false
+	return false;
+}
+
+/*** API Functions ************************************************************/
 void analyseArgs(int argc, char *argv[]) {
 	//Regular argc and argv should have been passed. Adjust to remove argv[0]
 	--argc;
 	++argv;
+	
+	//Bool flag when a match happens. Used to catch errors
+	bool matchFound;
 
 	//Go through every element in the argv array
 	for(int argStrIdx = 0; argStrIdx < argc; argStrIdx++) {
 		//Convert curent argv char[] to string
 		std::string inputArg = argv[argStrIdx];
 		
-		//Flag if a match can be made for this inputArg
-		bool matched = false; 
-		
 		//Loop through all Args stored in argVector. Use iterator
 		std::vector<Arg>::iterator itrtr; 
 		for(itrtr = argVector.begin(); itrtr != argVector.end(); itrtr++) {
-			
-			//Compare the primary and alias arg string to input. Store results
-			int priMatch, aliasMatch;
-			priMatch = itrtr->priMatchStr.compare(inputArg);
-			aliasMatch = itrtr->aliasMatchStr.compare(inputArg);
-			
-			/* NOTE: Leaving primary vs alias detection as possilbe independant 
-			triggers as this may be useful in the future for some niche cases */
-			if(priMatch == 0 || aliasMatch == 0) {
+
+			 
+			//Set matched flag to the return bool of argStringsMatch and check it 
+			if( (matchFound = argStringsMatch(*itrtr, inputArg)) == true) {
 			
 				/*** Arg Type detection ***************************************/
 				//Get the matched argument type to do specific execution.
@@ -120,10 +158,8 @@ void analyseArgs(int argc, char *argv[]) {
 				//TODO Variable type	
 				
 				/*** Constant execution when a match is found *****************/
-				//Set the current argVector object detection flag to true, and 
-				//set matched flag true for no-match detection out of loop
+				//Set the current argVector object detection flag to true
 				itrtr->detected = true;
-				matched = true;
 				
 				//If verbosity is enabled, print the matched arg
 				if(Config::verbose == true) {
@@ -134,17 +170,20 @@ void analyseArgs(int argc, char *argv[]) {
 				
 				//Break to prevent looping more Args looking for a match
 				break;
-			}
+			}//End of match found routine
+			
 		} //End of ArgVector loop
 		
+		
 		/*** Error Handling ***************************************************/
-		if(matched == false) {
-			//If mode is set to ignore, don't output message and don't exit.
+		//If no match was found for inputArg after checking all argVector objs
+		if(matchFound == false) {
+			//If mode is set to ignore, skip this bit and just continue
 			if(Config::errorMode != Config::ErrMode::ignore) {
 				//Set up the error string
 				std::string errStr = "No match for Arg \"" + inputArg + "\"";
 				
-				//Detect which mode is selected.
+				//Depending on ErrMode, warn or exit with errStr.
 				if(Config::errorMode == Config::ErrMode::warn) {
 					errorMsg(0, errStr);
 				}
@@ -153,6 +192,7 @@ void analyseArgs(int argc, char *argv[]) {
 				}
 			}
 		} //End of error handler 
+		
 	} //End of inputArg loop
 }
 
@@ -193,7 +233,7 @@ Arg getArgByReference(const std::string refStr) {
 	return retArg;
 }
 
-bool isArgDetected(const std::string refStr) {
+bool isDetected(const std::string refStr) {
 	//Get the Arg by reference and assign it to an Arg object
 	Arg tempArg = getArgByReference(refStr);
 	

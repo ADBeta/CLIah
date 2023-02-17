@@ -5,8 +5,8 @@
 *
 * This project is under the GPL3.0 licence. (c) 2023 ADBeta
 *
-* Modified 16 Feb 2023
-* V 0.4.4
+* Modified 17 Feb 2023
+* V 1.0.0
 *******************************************************************************/
 
 #include <string>
@@ -71,12 +71,16 @@ struct Arg {
 	
 }; //struct Arg
 
+/*** Internal functions not intedned for API use ******************************/
+//Prints an Argument structs data to standard out
 void printArg(const Arg &);
+//returns if the Argument pri/alias strings match input (handles case sensitive)
+bool argStringsMatch(const Arg &, std::string input);
 
 //Vector array of Args, stores user defined Args & variables therin
 extern std::vector <Arg> argVector;
 
-/*** CLIah functions **********************************************************/
+/*** CLIah API functions ******************************************************/
 //Pushes a new argument to the argVecor. Some variables are mandatory:
 // argReference		- String by which the argument is known. eg verbose
 // priMatchStr		- String to match for a detection (alias is optional)
@@ -93,7 +97,7 @@ void analyseArgs(int argc, char *argv[]);
 Arg getArgByReference(const std::string reference);
 
 //Finds and returns the detected flag of an Arg by argReference
-bool isArgDetected(const std::string reference);
+bool isDetected(const std::string reference);
 
 //Returns the referenced Args substring
 std::string getSubstring(const std::string reference);

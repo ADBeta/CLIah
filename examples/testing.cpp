@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
 		"--help",                            //Primary match string
 		CLIah::ArgType::flag,                //Argument type
 		"-h",                                //Alias match string
-		true                                 //Case sensitivity
+		false                                //Case sensitivity
     );
     
 	CLIah::addNewArg(
@@ -27,8 +27,8 @@ int main(int argc, char *argv[]) {
 	//Analyse the argc and argv inputs, to detect what args have been passed
 	CLIah::analyseArgs(argc, argv);
 	
-	std::cout << CLIah::isArgDetected("Verbose") << std::endl;
-	std::cout << CLIah::isArgDetected("Help") << std::endl;
+	std::cout << CLIah::isDetected("Verbose") << std::endl;
+	std::cout << CLIah::isDetected("Help") << std::endl;
 	//
 	std::cout << CLIah::getSubstring("Verbose") << std::endl << std::endl;
 	
