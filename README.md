@@ -25,16 +25,17 @@ CLIah::addNewArg(
 ); 
 ```
 
-To configure the CLIah library you can run  
+To configure the CLIah library you can use  
 `CLIah::Config::verbose = true/false` To enable/disable verbose output.  
 and  
-`CLIah::Config::errorMode = CLIah::Config::ErrMode::exit;` To define what CLIah will  
-do when an unknown Argument is passed via the command line.  
+`CLIah::Config::stringsEnabled = true/false` To define if CLIah will treat an  
+undefined Arg string as an error and exit, or if it will copy it to a String  
+struct vector (like the Arg vector) for use by the programmer. 
 
 To scan and analyse the arguments passed via the command line, use  
 `CLIah::analyseArgs(argc, argv);`  
 and all the error handling, subcommand, variable etc will be done for you.  
-**This must be done before any calls to the CLIah Argument functions**
+**This must be done before any calls to the CLIah Argument or String functions**
 
 To check if an argument has been detected, and to get the substring there are  
 two options. The recommended method is to use the built-in functions, passing  
@@ -71,7 +72,9 @@ provides, but it is perfectly valid if some specific use is required.
 ---
 
 ## TO-DO 
+* Overloadable error function or string, executed when unknown argument is passed
 * Function pointers
+* strToUpper externalised ?????
 
 ## Version 1.0.0
 
