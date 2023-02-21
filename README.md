@@ -72,14 +72,33 @@ std::cout << example.substring << std::endl;
 This is not highly recommended as it removes a lot of the abstraction that CLIah  
 provides, but it is perfectly valid if some specific use is required.  
 
----
+To allow CLIah to take arbitrary strings, enable them with a config flag.  
+You can then pull the strings from the stringVector or built-in methods:
+```C++
+CLIah::Config::stringsEnabled = true; //Enable arbitrary strings
 
+//Request a stringVector by the index it appeared in the Command Line (0 index)
+CLIah::String stringObj = CLIah::getStringByIndex(0);
+std::cout << "Gotten by index: " << stringObj.string << std::endl;
+
+//Directly access a specific stringVector object (Be careful of requesting past
+//the end of the vector)
+std::cout << "Direct Access: " << CLIah::stringVector[0].string << std::endl;
+
+//Loop through all objects in the stringVector 
+CLIah::String stringLoop;
+for(size_t index = 0; index > stringVector.size(); index++) {
+	stringLoop = stringVector.at(index);
+	std::cout << stringLoop << std::endl;
+}
+```
+---
 ## TO-DO 
 * Overloadable error function or string, executed when unknown argument is passed
 * Function pointers
 * strToUpper externalised ?????
 
-## Version 2.0.0
+## Version 2.2.0
 
 ## Licence
 CLIah is under the GPL (GPL3.0), please see LICENCE for information  

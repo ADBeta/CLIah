@@ -275,6 +275,27 @@ Arg getArgByIndex(unsigned int index) {
 	return retArg;
 }
 
+String getStringByIndex(unsigned int index) {
+	static String retString;
+	
+	//Go through every argVector element and check for reference string
+	std::vector<String>::iterator itrtr; 
+	for(itrtr = stringVector.begin(); itrtr != stringVector.end(); itrtr++) {
+		//Compare reference string and argReference. 
+		if(index == itrtr->index) {
+			//Set the return Arg object pointer, and return it
+			retString = *itrtr;
+			return retString;
+		}
+	}
+	
+	//If no match is found, fatal error as this could cause segfaults
+	errorMsg(2, "getStringByIndex: No String exists at index " + index);
+	
+	//Return to avoid compile warning
+	return retString;
+}
+
 bool isDetected(const std::string refStr) {
 	//Get the Arg by reference and assign it to an Arg object
 	Arg tempArg = getArgByReference(refStr);

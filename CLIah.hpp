@@ -88,12 +88,12 @@ extern std::vector <String> stringVector;
 
 /*** Internal functions not intedned for API use ******************************/
 //Prints an Argument structs data to standard out
-void printArg(const Arg &); //TODO
+void printArg(const Arg &);
 //returns if the Argument pri/alias strings match input (handles case sensitive)
 bool argStringsMatch(const Arg &, std::string input);
 
+//Prints a String struct
 void printString(const String &);
-
 
 /*** CLIah API functions ******************************************************/
 //Pushes a new argument to the argVecor. Some variables are mandatory:
@@ -110,8 +110,14 @@ void analyseArgs(int argc, char *argv[]);
 
 //Finds and returns Arg struct with matching argReference string.
 Arg getArgByReference(const std::string reference);
+
 //Find and returns Arg with matching index number
 Arg getArgByIndex(unsigned int index);
+
+
+//Returns the String with mathching index
+String getStringByIndex(unsigned int index);
+
 
 //Finds and returns the detected flag of an Arg by argReference
 bool isDetected(const std::string reference);
