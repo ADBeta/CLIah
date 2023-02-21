@@ -89,7 +89,7 @@ std::cout << "Direct Access: " << CLIah::stringVector[0].string << std::endl;
 CLIah::String stringLoop;
 for(size_t index = 0; index > stringVector.size(); index++) {
 	stringLoop = stringVector.at(index);
-	std::cout << stringLoop << std::endl;
+	std::cout << stringLoop.string << std::endl;
 }
 ```
 ---
