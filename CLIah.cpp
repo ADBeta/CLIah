@@ -100,6 +100,8 @@ void printArg(const Arg &ref) {
 void printString(const String &ref) {
 	std::cout << "String          | " << ref.string << std::endl;
 	std::cout << "Index           | " << ref.index << std::endl;
+	
+	std::cout << std::endl;
 }
 
 bool argStringsMatch(const Arg &ref, std::string input) {
@@ -247,6 +249,27 @@ Arg getArgByReference(const std::string refStr) {
 	
 	//If no match is found, fatal error as this could cause segfaults
 	errorMsg(2, "getArgByReference: No Arg exists using reference " + refStr);
+	
+	//Return to avoid compile warning
+	return retArg;
+}
+
+Arg getArgByIndex(unsigned int index) {
+	static Arg retArg;
+	
+	//Go through every argVector element and check for reference string
+	std::vector<Arg>::iterator itrtr; 
+	for(itrtr = argVector.begin(); itrtr != argVector.end(); itrtr++) {
+		//Compare reference string and argReference. 
+		if(index == itrtr->index) {
+			//Set the return Arg object pointer, and return it
+			retArg = *itrtr;
+			return retArg;
+		}
+	}
+	
+	//If no match is found, fatal error as this could cause segfaults
+	errorMsg(2, "getArgByIndex: No Arg exists at index " + index);
 	
 	//Return to avoid compile warning
 	return retArg;

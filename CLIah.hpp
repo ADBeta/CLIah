@@ -5,8 +5,8 @@
 *
 * This project is under the GPL3.0 licence. (c) 2023 ADBeta
 *
-* Modified 20 Feb 2023
-* V 1.1.0
+* Modified 21 Feb 2023
+* V 2.0.0
 *******************************************************************************/
 
 #include <string>
@@ -110,6 +110,8 @@ void analyseArgs(int argc, char *argv[]);
 
 //Finds and returns Arg struct with matching argReference string.
 Arg getArgByReference(const std::string reference);
+//Find and returns Arg with matching index number
+Arg getArgByIndex(unsigned int index);
 
 //Finds and returns the detected flag of an Arg by argReference
 bool isDetected(const std::string reference);

@@ -39,7 +39,7 @@ and all the error handling, subcommand, variable etc will be done for you.
 
 To check if an argument has been detected, and to get the substring there are  
 two options. The recommended method is to use the built-in functions, passing  
-the Reference name strings to...
+the Reference name string.
 ```C++
 bool detected = CLIah::isDetected("example");
 
@@ -55,9 +55,12 @@ std::cout << substring << std::endl;
 ```
 
 
-The other method is to create a new Arg Object and use `getArgByReference`, like this.  
+The other method is to create a new Arg Object and use `getArgByReference(string)`  
+or `getArgByIndex(int)`, like this.  
 ```C++
-CLIah::Arg example = getArgByReference("example");
+CLIah::Arg example = CLIah::getArgByReference("example");
+//or
+CLIah::Arg example = CLIah::getArgByIndex(0);
 
 if (example.detected) {
 	//Do Something
@@ -76,7 +79,7 @@ provides, but it is perfectly valid if some specific use is required.
 * Function pointers
 * strToUpper externalised ?????
 
-## Version 1.0.0
+## Version 2.0.0
 
 ## Licence
 CLIah is under the GPL (GPL3.0), please see LICENCE for information  

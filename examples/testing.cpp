@@ -26,9 +26,7 @@ int main(int argc, char *argv[]) {
 	
 	//Analyse the argc and argv inputs, to detect what args have been passed
 	CLIah::analyseArgs(argc, argv);
-	
-	std::cout << CLIah::isDetected("Verbose") << std::endl;
-	std::cout << CLIah::isDetected("Help") << std::endl;
+	CLIah::printArg(CLIah::getArgByIndex(0));
 	//
 	std::cout << CLIah::getSubstring("Verbose") << std::endl << std::endl;
 	
