@@ -6,7 +6,7 @@
 * This project is under the GPL3.0 licence. (c) 2023 ADBeta
 *
 * This is a simple Subcommand Argument example
-* Modified 17 Feb 2023
+* Modified 24 Feb 2023
 *******************************************************************************/
 
 // Compile this example and run it with 
@@ -31,6 +31,9 @@ int main(int argc, char *argv[]) {
 		"-s",                                //Alias match string
 		true                                 //Case sensitivity
     );
+	
+	//Set the custom error message when the substring is missing
+	CLIah::setErrorMessage("Example", "Demo error message. Substring missing");
 	
 	//Analyse the argc and argv inputs, to detect what args have been passed
 	CLIah::analyseArgs(argc, argv);

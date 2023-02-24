@@ -6,7 +6,7 @@
 * This project is under the GPL3.0 licence. (c) 2023 ADBeta
 *
 * This is a simple Subcommand Argument example
-* Modified 17 Feb 2023
+* Modified 24 Feb 2023
 *******************************************************************************/
 
 // Compile this example and run it with any iteration of -e or --example
@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
 	CLIah::addNewArg(
 		"Example",                           //Reference
 		"--example",                         //Primary match string
-		CLIah::ArgType::subcommand,          //Argument type
+		CLIah::ArgType::flag,                //Argument type
 		"-e",                                //Alias match string
 		false                                //Case sensitivity
     );

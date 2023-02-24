@@ -12,7 +12,7 @@
 
 #include <limits>
 
-//NOTE: algorithm is used for strToUpper(), purely for practice with transform.
+//NOTE: algorithm is used for strToLower(), purely for practice with transform.
 //If it is noted to be slow, or break some systems I will replace it with manual
 //Index based looping on a string. Let me know.
 #include <algorithm> 
@@ -20,16 +20,16 @@
 #include "CLIah.hpp"
 
 /*** Helper functions *********************************************************/
-std::string strToUpper(std::string input) {
+std::string strToLower(std::string input) {
 	//Transform seems to be the recommended method - causes another include 
 	//and may cause other unknown issues. For practice, this will stay for now,
 	//But may be replaced with a direct index (or iterator) in future.
 	std::transform(input.begin(), input.end(), input.begin(), 
 		//operation is getting the current char and performing toupper
-		[](unsigned char chr){ return std::toupper(chr); }
+		[](unsigned char chr){ return std::tolower(chr); }
 	);
 	
-	//Return the uppercase string
+	//Return the lowercase string
 	return input;
 }
 
@@ -64,6 +64,24 @@ unsigned int indexMax = std::numeric_limits<unsigned int>::max();
 
 std::vector <Arg> argVector;
 std::vector <String> stringVector;
+
+void argError(int errLevel, Arg &ref) {
+	std::cerr << "Error: CLIah: ";
+	
+	//If the arg has a custom help message, print it
+	if(ref.errMessage.empty() == 0) {
+		std::cerr << ref.errMessage << std::endl;
+	} else {
+		//Depending on the style of argument, print a pre-defined error message
+		if(ref.type == ArgType::subcommand) {
+			std::cerr << "Argument \"" << ref.argReference << "\" " 
+			<< " is a subcommand but does not have any substring." << std::endl;
+		}
+	}
+	
+	//Error level exit routine
+	if(errLevel > 0) exit(EXIT_FAILURE);	
+}
 
 void printArg(const Arg &ref) {
 	//Print the argReference, primary and alias args.
@@ -113,9 +131,9 @@ bool argStringsMatch(const Arg &ref, std::string input) {
 	//Pri Alias and input to uppercase to make any case usage irrelevant
 	if(ref.caseSensitive == false) {
 		//Convert input, priStr and aliasStr to uppercase
-		input = strToUpper(input);
-		priStr = strToUpper(priStr);
-		aliasStr = strToUpper(aliasStr);
+		input = strToLower(input);
+		priStr = strToLower(priStr);
+		aliasStr = strToLower(aliasStr);
 	}
 	
 	//If an exact match for either pri or alias occurs, return a match flag
@@ -161,8 +179,8 @@ void analyseArgs(int argc, char *argv[]) {
 				if(tempType == CLIah::ArgType::subcommand) {
 					//Make sure there *IS* a next argument, if not fatal error.
 					if(argStrIdx + 1 >= argc) {
-						errorMsg(2, "analyseArgs: " + inputArg +
-						          " is a Subcommand but has no string");
+						//Print error message and exit.
+						argError(1, *itrtr);
 					}
 					
 					//Incriment argStrIdx to get the substring, and the next
@@ -233,8 +251,8 @@ void addNewArg(const std::string ref, const std::string pri, const ArgType type,
 	argVector.push_back(newArg);
 }
 
-Arg getArgByReference(const std::string refStr) {
-	static Arg retArg;
+Arg *getArgByReference(const std::string refStr) {
+	static Arg *retArg;
 	
 	//Go through every argVector element and check for reference string
 	std::vector<Arg>::iterator itrtr; 
@@ -242,7 +260,7 @@ Arg getArgByReference(const std::string refStr) {
 		//Compare reference string and argReference. 
 		if(refStr.compare( itrtr->argReference ) == 0) {
 			//Set the return Arg object pointer, and return it
-			retArg = *itrtr;
+			retArg = &(*itrtr);
 			return retArg;
 		}
 	}
@@ -254,8 +272,12 @@ Arg getArgByReference(const std::string refStr) {
 	return retArg;
 }
 
-Arg getArgByIndex(unsigned int index) {
-	static Arg retArg;
+void setErrorMessage(const std::string ref, const std::string msg) {
+	getArgByReference(ref)->errMessage = msg;
+}
+
+Arg *getArgByIndex(unsigned int index) {
+	static Arg *retArg;
 	
 	//Go through every argVector element and check for reference string
 	std::vector<Arg>::iterator itrtr; 
@@ -263,7 +285,7 @@ Arg getArgByIndex(unsigned int index) {
 		//Compare reference string and argReference. 
 		if(index == itrtr->index) {
 			//Set the return Arg object pointer, and return it
-			retArg = *itrtr;
+			retArg = &(*itrtr);
 			return retArg;
 		}
 	}
@@ -275,8 +297,8 @@ Arg getArgByIndex(unsigned int index) {
 	return retArg;
 }
 
-String getStringByIndex(unsigned int index) {
-	static String retString;
+String *getStringByIndex(unsigned int index) {
+	static String *retString;
 	
 	//Go through every argVector element and check for reference string
 	std::vector<String>::iterator itrtr; 
@@ -284,7 +306,7 @@ String getStringByIndex(unsigned int index) {
 		//Compare reference string and argReference. 
 		if(index == itrtr->index) {
 			//Set the return Arg object pointer, and return it
-			retString = *itrtr;
+			retString = &(*itrtr);
 			return retString;
 		}
 	}
@@ -297,17 +319,17 @@ String getStringByIndex(unsigned int index) {
 }
 
 bool isDetected(const std::string refStr) {
-	//Get the Arg by reference and assign it to an Arg object
-	Arg tempArg = getArgByReference(refStr);
+	//Arg pointer from getArg
+	Arg *ptrArg = getArgByReference(refStr);
 	
-	return tempArg.detected;
+	return ptrArg->detected;
 }
 
 std::string getSubstring(const std::string refStr) {
-	//Get the Arg by reference and assign it to an Arg object
-	Arg tempArg = getArgByReference(refStr);
+	//Arg pointer from getArg
+	Arg *ptrArg = getArgByReference(refStr);
 	
-	return tempArg.substring;
+	return ptrArg->substring;
 }
 
 } //namespace CLIah

@@ -5,8 +5,8 @@
 *
 * This project is under the GPL3.0 licence. (c) 2023 ADBeta
 *
-* Modified 21 Feb 2023
-* V 2.0.0
+* Modified 24 Feb 2023
+* v3.1.1
 *******************************************************************************/
 
 #include <string>
@@ -18,15 +18,17 @@
 namespace CLIah {
 
 /*** Configuration sub namespace **********************************************/
-	namespace Config {
-	//Are arbitrary strings enabled. If true, unknown args will be used as 
-	//strings, if false, they will cause and error and exit
-	extern bool stringsEnabled;
-	
-	//Verbosity selection. Prints matched Args. Defaults to false
-	extern bool verbose;
-	
-	} //namespace Config
+namespace Config {
+//Are arbitrary strings enabled. If true, unknown args will be used as 
+//strings, if false, they will cause and error and exit
+extern bool stringsEnabled;
+
+//Verbosity selection. Prints matched Args. Defaults to false
+extern bool verbose;
+
+} //namespace Config
+
+
 
 /*** CLI Arg types, structs and variables *************************************/
 /* Arg types:
@@ -41,6 +43,8 @@ namespace CLIah {
 	  to substring
 */
 enum class ArgType { flag, subcommand, variable, string }; 
+
+
 
 /*** Argument Structure *******************************************************/
 //CLIah maxIndex vlaues is an alias of numeric limits unsigned int
@@ -69,7 +73,12 @@ struct Arg {
 	//Flag set if the argument has been detected, and validated.
 	bool detected = false;
 	
+	//Definable error message if the arg detection fails.
+	std::string errMessage = "";
+	
 }; //struct Arg
+
+
 
 //CLI pure string argument structure. For example "./file.txt" or "append"
 struct String {
@@ -86,14 +95,23 @@ extern std::vector <Arg> argVector;
 //Vector array of Strings.
 extern std::vector <String> stringVector;
 
+
+
 /*** Internal functions not intedned for API use ******************************/
 //Prints an Argument structs data to standard out
 void printArg(const Arg &);
-//returns if the Argument pri/alias strings match input (handles case sensitive)
-bool argStringsMatch(const Arg &, std::string input);
 
 //Prints a String struct
 void printString(const String &);
+
+//returns if the Argument pri/alias strings match input (handles case sensitive)
+bool argStringsMatch(const Arg &, std::string input);
+
+//Print the args error message, or a default one if not defined.
+//errLevel defines exit behaviour. 0 - Message only.     > 0 - Exit program
+void argError(int errLevel, Arg &);
+
+
 
 /*** CLIah API functions ******************************************************/
 //Pushes a new argument to the argVecor. Some variables are mandatory:
@@ -108,16 +126,17 @@ void addNewArg(const std::string argReference, const std::string priMatchStr,
 //Must be called before any other functions can be.
 void analyseArgs(int argc, char *argv[]);
 
+//Sets the error message of an Arg by reference
+void setErrorMessage(const std::string reference, const std::string message);
+
 //Finds and returns Arg struct with matching argReference string.
-Arg getArgByReference(const std::string reference);
+Arg *getArgByReference(const std::string reference);
 
 //Find and returns Arg with matching index number
-Arg getArgByIndex(unsigned int index);
-
+Arg *getArgByIndex(unsigned int index);
 
 //Returns the String with mathching index
-String getStringByIndex(unsigned int index);
-
+String *getStringByIndex(unsigned int index);
 
 //Finds and returns the detected flag of an Arg by argReference
 bool isDetected(const std::string reference);
