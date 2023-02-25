@@ -21,8 +21,9 @@ for more detailed information.
 ---
 ## TO-DO
 * Function pointers
+* Error and exit routine on no found reference/index on getArg...
 
-## Version 3.1.1
+## Version 3.2.1
 Last change:
 * Changed getArgByxxxxx to return pointers
 

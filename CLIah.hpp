@@ -5,8 +5,8 @@
 *
 * This project is under the GPL3.0 licence. (c) 2023 ADBeta
 *
-* Modified 24 Feb 2023
-* v3.1.1
+* Modified 25 Feb 2023
+* v3.2.1
 *******************************************************************************/
 
 #include <string>

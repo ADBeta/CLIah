@@ -33,20 +33,6 @@ std::string strToLower(std::string input) {
 	return input;
 }
 
-//TODO may cause errors compiling
-void errorMsg(const unsigned int errLevel, const std::string errMsg) {
-	std::string prefix;
-	
-	//Set prefix to Warning or Error depenging on errLevel
-	if(errLevel == 0) { prefix = "Warning: ";
-	} else { prefix = "Error: "; }
-	
-	std::cerr << prefix << errMsg << std::endl;
-	
-	//If the errLevel is > 1 then exit the program as a fatal error
-	if(errLevel > 1) exit(EXIT_FAILURE);
-}
-
 /*** CLIah Functions **********************************************************/
 namespace CLIah {
 	namespace Config {
@@ -227,8 +213,9 @@ void analyseArgs(int argc, char *argv[]) {
 					printString(tempString);
 				}
 			} else {
-				std::string errStr = "No match for Arg \"" + inputArg + "\"";
-				errorMsg(2, errStr);
+				std::cerr << "Error: CLIah: No matching Argument for input \"" 
+				          << inputArg << "\"" << std::endl;
+				exit(EXIT_FAILURE);
 			}
 		} //End of error handler 
 		
@@ -251,8 +238,12 @@ void addNewArg(const std::string ref, const std::string pri, const ArgType type,
 	argVector.push_back(newArg);
 }
 
+void setErrorMessage(const std::string ref, const std::string msg) {
+	getArgByReference(ref)->errMessage = msg;
+}
+
 Arg *getArgByReference(const std::string refStr) {
-	static Arg *retArg;
+	Arg *argPtr = NULL;
 	
 	//Go through every argVector element and check for reference string
 	std::vector<Arg>::iterator itrtr; 
@@ -260,24 +251,19 @@ Arg *getArgByReference(const std::string refStr) {
 		//Compare reference string and argReference. 
 		if(refStr.compare( itrtr->argReference ) == 0) {
 			//Set the return Arg object pointer, and return it
-			retArg = &(*itrtr);
-			return retArg;
+			argPtr = &(*itrtr);
+			break;
 		}
 	}
 	
-	//If no match is found, fatal error as this could cause segfaults
-	errorMsg(2, "getArgByReference: No Arg exists using reference " + refStr);
-	
 	//Return to avoid compile warning
-	return retArg;
+	return argPtr;
 }
 
-void setErrorMessage(const std::string ref, const std::string msg) {
-	getArgByReference(ref)->errMessage = msg;
-}
+
 
 Arg *getArgByIndex(unsigned int index) {
-	static Arg *retArg;
+	Arg *retArg = NULL;
 	
 	//Go through every argVector element and check for reference string
 	std::vector<Arg>::iterator itrtr; 
@@ -286,19 +272,16 @@ Arg *getArgByIndex(unsigned int index) {
 		if(index == itrtr->index) {
 			//Set the return Arg object pointer, and return it
 			retArg = &(*itrtr);
-			return retArg;
+			break;
 		}
 	}
-	
-	//If no match is found, fatal error as this could cause segfaults
-	errorMsg(2, "getArgByIndex: No Arg exists at index " + index);
 	
 	//Return to avoid compile warning
 	return retArg;
 }
 
 String *getStringByIndex(unsigned int index) {
-	static String *retString;
+	String *retString = NULL;
 	
 	//Go through every argVector element and check for reference string
 	std::vector<String>::iterator itrtr; 
@@ -307,12 +290,9 @@ String *getStringByIndex(unsigned int index) {
 		if(index == itrtr->index) {
 			//Set the return Arg object pointer, and return it
 			retString = &(*itrtr);
-			return retString;
+			break;
 		}
 	}
-	
-	//If no match is found, fatal error as this could cause segfaults
-	errorMsg(2, "getStringByIndex: No String exists at index " + index);
 	
 	//Return to avoid compile warning
 	return retString;
